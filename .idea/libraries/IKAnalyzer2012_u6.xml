@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="IKAnalyzer2012_u6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/IKAnalyzer2012_u6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lucene-core-3.6.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

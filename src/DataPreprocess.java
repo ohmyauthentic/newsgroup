@@ -1,10 +1,15 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
+
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.util.Version;
 /**
  * Created by candy on 2015/11/15.
  */
@@ -16,6 +21,24 @@ public class DataPreprocess {
         dir = new File(filename);
     }
 
+    private void Analyzer(String testString){
+        List<String> list = new ArrayList<>();
+        try{
+            StringReader reader = new StringReader(testString);
+            FileReader stopWords = new FileReader("./resource/stopword.txt");
+            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_20,stopWords);
+            TokenStream ts = analyzer.tokenStream("", reader);
+            ts.addAttribute(CharTermAttribute.class);
+            while (ts.incrementToken()) {
+                CharTermAttribute charTermAttribute = ts.getAttribute(CharTermAttribute.class);
+                String word = charTermAttribute.toString();
+                list.add(word);
+                System.out.println(charTermAttribute.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static StringBuilder readFileByLines(File file) {
         StringBuilder s = new StringBuilder();
