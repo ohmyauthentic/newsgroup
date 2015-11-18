@@ -7,7 +7,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
 /**
- * Created by candy on 2015/11/15.
+ * Created by zmq on 2015/11/15.
  * 读取数据并且分词
  */
 public class DataPreprocess {
@@ -71,10 +71,10 @@ public class DataPreprocess {
             }
         }
         //调用stemmer 提取词干
-        if(allFiles.size()>0){
+//        if(allFiles.size()>0){
 //            System.out.println(allFiles.toString());
-            Stemmer.porterMain(allFiles);
-        }
+//            Stemmer.porterMain(allFiles);
+//        }
     }
 
     private static void createProcessFile(String srcDir, String targetDir) throws IOException {
@@ -123,8 +123,6 @@ public class DataPreprocess {
         // TODO Auto-generated method stub
         //step1 英文词法分析，去除数字、连字符、标点符号、特殊字符，所有大写字母转换成小写，可以考虑用正则表达式
         String res[] = line.split("[^a-zA-Z]");
-        //这里要小心，防止把有单词中间有数字和连字符的单词 截断了，但是截断也没事
-
         String resString = new String();
         //step2去停用词
         //step3stemming,返回后一起做
@@ -135,6 +133,5 @@ public class DataPreprocess {
         }
         return resString;
     }
-
 
 }

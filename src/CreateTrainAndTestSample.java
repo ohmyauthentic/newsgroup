@@ -9,7 +9,10 @@ import java.util.TreeMap;
 /**创建训练样例集合与测试样例集合
  */
 public class CreateTrainAndTestSample {
-	
+	/**
+	 * 	特征词选取
+	 * @throws IOException
+	 */
 	void filterSpecialWords() throws IOException {
 		// TODO Auto-generated method stub
 		String word;
@@ -26,7 +29,7 @@ public class CreateTrainAndTestSample {
 			if(!targetDirFile.exists()){
 				targetDirFile.mkdir();
 			}
-			for(int j = 0;j < sample.length; j++){	
+			for(int j = 0;j < sample.length; j++){
 				String fileShortName = sample[j].getName();
 				if(fileShortName.contains("stemed")){
 					targetDir = "F:/DataMiningSample/processedSampleOnlySpecial/"+sampleDir[i].getName()+"/"+fileShortName.substring(0,5);
@@ -60,12 +63,12 @@ public class CreateTrainAndTestSample {
 				String fileShortName = sample[j].getName();
 				String subFileName = fileShortName;
 				if(j > testBeginIndex && j< testEndIndex){//序号在规定区间内的作为测试样本，需要为测试样本生成类别-序号文件，最后加入分类的结果，一行对应一个文件，方便统计准确率
-					targetDir = "F:/DataMiningSample/TestSample"+indexOfSample+"/"+sampleDir[i].getName();
+					targetDir = "DataMiningSample/TestSample"+indexOfSample+"/"+sampleDir[i].getName();
 					crWriter.append(subFileName + " " + sampleDir[i].getName()+"\n");
 					
 					}
 				else{//其余作为训练样本
-					targetDir = "F:/DataMiningSample/TrainSample"+indexOfSample+"/"+sampleDir[i].getName();
+					targetDir = "DataMiningSample/TrainSample"+indexOfSample+"/"+sampleDir[i].getName();
 				}
 				targetDir = targetDir.replace("\\","/");
 				File trainSamFile = new File(targetDir);
