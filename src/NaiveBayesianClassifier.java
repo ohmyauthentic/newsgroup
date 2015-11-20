@@ -12,32 +12,32 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
-/**ÀûÓÃÆÓËØ±´Ò¶Ë¹Ëã·¨¶ÔnewsgroupÎÄµµ¼¯×ö·ÖÀà£¬²ÉÓÃÊ®×é½»²æ²âÊÔÈ¡Æ½¾ùÖµ
- * ²ÉÓÃ¶àÏîÊ½Ä£ĞÍ,stanfordĞÅÏ¢¼ìË÷µ¼ÂÛ¿Î¼şÉÏÃæÑÔ¶àÏîÊ½Ä£ĞÍ±È²®Å¬ÀûÄ£ĞÍ×¼È·¶È¸ß
- * ÀàÌõ¼ş¸ÅÂÊP(tk|c)=(Ààc ÏÂµ¥´Êtk ÔÚ¸÷¸öÎÄµµÖĞ³öÏÖ¹ıµÄ´ÎÊıÖ®ºÍ+1)/(ÀàcÏÂµ¥´Ê×ÜÊı+|V|)
+/**åˆ©ç”¨æœ´ç´ è´å¶æ–¯ç®—æ³•å¯¹newsgroupæ–‡æ¡£é›†åšåˆ†ç±»ï¼Œé‡‡ç”¨åç»„äº¤å‰æµ‹è¯•å–å¹³å‡å€¼
+ * é‡‡ç”¨å¤šé¡¹å¼æ¨¡å‹,stanfordä¿¡æ¯æ£€ç´¢å¯¼è®ºè¯¾ä»¶ä¸Šé¢è¨€å¤šé¡¹å¼æ¨¡å‹æ¯”ä¼¯åŠªåˆ©æ¨¡å‹å‡†ç¡®åº¦é«˜
+ * ç±»æ¡ä»¶æ¦‚ç‡P(tk|c)=(ç±»c ä¸‹å•è¯tk åœ¨å„ä¸ªæ–‡æ¡£ä¸­å‡ºç°è¿‡çš„æ¬¡æ•°ä¹‹å’Œ+1)/(ç±»cä¸‹å•è¯æ€»æ•°+|V|)
  */
 public class NaiveBayesianClassifier {
 	
-	/**ÓÃ±´Ò¶Ë¹·¨¶Ô²âÊÔÎÄµµ¼¯·ÖÀà
-	 * @param trainDir ÑµÁ·ÎÄµµ¼¯Ä¿Â¼
-	 * @param testDir ²âÊÔÎÄµµ¼¯Ä¿Â¼
-	 * @param classifyResultFileNew ·ÖÀà½á¹ûÎÄ¼şÂ·¾¶
+	/**ç”¨è´å¶æ–¯æ³•å¯¹æµ‹è¯•æ–‡æ¡£é›†åˆ†ç±»
+	 * @param trainDir è®­ç»ƒæ–‡æ¡£é›†ç›®å½•
+	 * @param testDir æµ‹è¯•æ–‡æ¡£é›†ç›®å½•
+	 * @param classifyResultFileNew åˆ†ç±»ç»“æœæ–‡ä»¶è·¯å¾„
 	 * @throws Exception 
 	 */
 	private void doProcess(String trainDir, String testDir,
 			String classifyResultFileNew) throws Exception {
 		// TODO Auto-generated method stub
-		Map<String,Double> cateWordsNum = new TreeMap<String,Double>();//±£´æÑµÁ·¼¯Ã¿¸öÀà±ğµÄ×Ü´ÊÊı
-		Map<String,Double> cateWordsProb = new TreeMap<String,Double>();//±£´æÑµÁ·Ñù±¾Ã¿¸öÀà±ğÖĞÃ¿¸öÊôĞÔ´ÊµÄ³öÏÖ´ÊÊı
+		Map<String,Double> cateWordsNum;//ä¿å­˜è®­ç»ƒé›†æ¯ä¸ªç±»åˆ«çš„æ€»è¯æ•°
+		Map<String,Double> cateWordsProb;//ä¿å­˜è®­ç»ƒæ ·æœ¬æ¯ä¸ªç±»åˆ«ä¸­æ¯ä¸ªå±æ€§è¯çš„å‡ºç°è¯æ•°
 		cateWordsProb = getCateWordsProb(trainDir);
 		cateWordsNum = getCateWordsNum(trainDir);
-		double totalWordsNum = 0.0;//¼ÇÂ¼ËùÓĞÑµÁ·¼¯µÄ×Ü´ÊÊı
+		double totalWordsNum = 0.0;//è®°å½•æ‰€æœ‰è®­ç»ƒé›†çš„æ€»è¯æ•°
 		Set<Map.Entry<String,Double>> cateWordsNumSet = cateWordsNum.entrySet();
 		for(Iterator<Map.Entry<String,Double>> it = cateWordsNumSet.iterator(); it.hasNext();){
 			Map.Entry<String, Double> me = it.next();
 			totalWordsNum += me.getValue();
 		}
-		//ÏÂÃæ¿ªÊ¼¶ÁÈ¡²âÊÔÑùÀı×ö·ÖÀà
+		//ä¸‹é¢å¼€å§‹è¯»å–æµ‹è¯•æ ·ä¾‹åšåˆ†ç±»
 		Vector<String> testFileWords = new Vector<String>();
 		String word;
 		File[] testDirFiles = new File(testDir).listFiles();
@@ -51,7 +51,7 @@ public class NaiveBayesianClassifier {
 				while((word = spBR.readLine()) != null){
 					testFileWords.add(word);
 				}
-				//ÏÂÃæ·Ö±ğ¼ÆËã¸Ã²âÊÔÑùÀıÊôÓÚ¶şÊ®¸öÀà±ğµÄ¸ÅÂÊ
+				//ä¸‹é¢åˆ†åˆ«è®¡ç®—è¯¥æµ‹è¯•æ ·ä¾‹å±äºäºŒåä¸ªç±»åˆ«çš„æ¦‚ç‡
 				File[] trainDirFiles = new File(trainDir).listFiles();
 				BigDecimal maxP = new BigDecimal(0);
 				String bestCate = null;
@@ -74,9 +74,9 @@ public class NaiveBayesianClassifier {
 		crWriter.close();
 	}
 	
-	/**Í³¼ÆÄ³ÀàÑµÁ·Ñù±¾ÖĞÃ¿¸öµ¥´ÊµÄ³öÏÖ´ÎÊı
-	 * @param strDir ÑµÁ·Ñù±¾¼¯Ä¿Â¼
-	 * @return Map<String,Double> cateWordsProb ÓÃ"ÀàÄ¿_µ¥´Ê"¶ÔÀ´Ë÷ÒıµÄmap,±£´æµÄval¾ÍÊÇ¸ÃÀàÄ¿ÏÂ¸Ãµ¥´ÊµÄ³öÏÖ´ÎÊı
+	/**ç»Ÿè®¡æŸç±»è®­ç»ƒæ ·æœ¬ä¸­æ¯ä¸ªå•è¯çš„å‡ºç°æ¬¡æ•°
+	 * @param strDir è®­ç»ƒæ ·æœ¬é›†ç›®å½•
+	 * @return Map<String,Double> cateWordsProb ç”¨"ç±»ç›®_å•è¯"å¯¹æ¥ç´¢å¼•çš„map,ä¿å­˜çš„valå°±æ˜¯è¯¥ç±»ç›®ä¸‹è¯¥å•è¯çš„å‡ºç°æ¬¡æ•°
 	 * @throws IOException 
 	 */
 	public Map<String,Double> getCateWordsProb(String strDir) throws IOException{
@@ -104,13 +104,13 @@ public class NaiveBayesianClassifier {
 		return cateWordsProb;	
 	}
 	
-	/**¼ÆËãÄ³Ò»¸ö²âÊÔÑù±¾ÊôÓÚÄ³¸öÀà±ğµÄ¸ÅÂÊ
-	 * @param Map<String, Double> cateWordsProb ¼ÇÂ¼Ã¿¸öÄ¿Â¼ÖĞ³öÏÖµÄµ¥´Ê¼°´ÎÊı 
-	 * @param File trainFile ¸ÃÀà±ğËùÓĞµÄÑµÁ·Ñù±¾ËùÔÚÄ¿Â¼
-	 * @param Vector<String> testFileWords ¸Ã²âÊÔÑù±¾ÖĞµÄËùÓĞ´Ê¹¹³ÉµÄÈİÆ÷
-	 * @param double totalWordsNum ¼ÇÂ¼ËùÓĞÑµÁ·Ñù±¾µÄµ¥´Ê×ÜÊı
-	 * @param Map<String, Double> cateWordsNum ¼ÇÂ¼Ã¿¸öÀà±ğµÄµ¥´Ê×ÜÊı
-	 * @return BigDecimal ·µ»Ø¸Ã²âÊÔÑù±¾ÔÚ¸ÃÀà±ğÖĞµÄ¸ÅÂÊ
+	/**è®¡ç®—æŸä¸€ä¸ªæµ‹è¯•æ ·æœ¬å±äºæŸä¸ªç±»åˆ«çš„æ¦‚ç‡
+	 * @param Map<String, Double> cateWordsProb è®°å½•æ¯ä¸ªç›®å½•ä¸­å‡ºç°çš„å•è¯åŠæ¬¡æ•° 
+	 * @param File trainFile è¯¥ç±»åˆ«æ‰€æœ‰çš„è®­ç»ƒæ ·æœ¬æ‰€åœ¨ç›®å½•
+	 * @param Vector<String> testFileWords è¯¥æµ‹è¯•æ ·æœ¬ä¸­çš„æ‰€æœ‰è¯æ„æˆçš„å®¹å™¨
+	 * @param double totalWordsNum è®°å½•æ‰€æœ‰è®­ç»ƒæ ·æœ¬çš„å•è¯æ€»æ•°
+	 * @param Map<String, Double> cateWordsNum è®°å½•æ¯ä¸ªç±»åˆ«çš„å•è¯æ€»æ•°
+	 * @return BigDecimal è¿”å›è¯¥æµ‹è¯•æ ·æœ¬åœ¨è¯¥ç±»åˆ«ä¸­çš„æ¦‚ç‡
 	 * @throws Exception 
 	 * @throws IOException 
 	 */
@@ -135,9 +135,9 @@ public class NaiveBayesianClassifier {
 		return res;
 	}
 
-	/**»ñµÃÃ¿¸öÀàÄ¿ÏÂµÄµ¥´Ê×ÜÊı
-	 * @param trainDir ÑµÁ·ÎÄµµ¼¯Ä¿Â¼
-	 * @return Map<String, Double> <Ä¿Â¼Ãû£¬µ¥´Ê×ÜÊı>µÄmap
+	/**è·å¾—æ¯ä¸ªç±»ç›®ä¸‹çš„å•è¯æ€»æ•°
+	 * @param trainDir è®­ç»ƒæ–‡æ¡£é›†ç›®å½•
+	 * @return Map<String, Double> <ç›®å½•åï¼Œå•è¯æ€»æ•°>çš„map
 	 * @throws IOException 
 	 */
 	private Map<String, Double> getCateWordsNum(String trainDir) throws IOException {
@@ -159,10 +159,10 @@ public class NaiveBayesianClassifier {
 		return cateWordsNum;
 	}
 	
-	/**¸ù¾İÕıÈ·ÀàÄ¿ÎÄ¼şºÍ·ÖÀà½á¹ûÎÄ¼şÍ³¼Æ³ö×¼È·ÂÊ
-	 * @param classifyResultFile ÕıÈ·ÀàÄ¿ÎÄ¼ş
-	 * @param classifyResultFileNew ·ÖÀà½á¹ûÎÄ¼ş
-	 * @return double ·ÖÀàµÄ×¼È·ÂÊ
+	/**æ ¹æ®æ­£ç¡®ç±»ç›®æ–‡ä»¶å’Œåˆ†ç±»ç»“æœæ–‡ä»¶ç»Ÿè®¡å‡ºå‡†ç¡®ç‡
+	 * @param classifyResultFile æ­£ç¡®ç±»ç›®æ–‡ä»¶
+	 * @param classifyResultFileNew åˆ†ç±»ç»“æœæ–‡ä»¶
+	 * @return double åˆ†ç±»çš„å‡†ç¡®ç‡
 	 * @throws IOException 
 	 */
 	double computeAccuracy(String classifyResultFile,
@@ -184,24 +184,24 @@ public class NaiveBayesianClassifier {
 		return rightCount / resultCate.size();	
 	}
 	
-	/**¸ù¾İÕıÈ·ÀàÄ¿ÎÄ¼şºÍ·ÖÀà½á¹ûÎÄ¼ÆËã»ìÏı¾ØÕó²¢ÇÒÊä³ö
-	 * @param rightCate ÕıÈ·ÀàÄ¿¶ÔÓ¦map
-	 * @param resultCate ·ÖÀà½á¹û¶ÔÓ¦map
-	 * @return double ·ÖÀàµÄ×¼È·ÂÊ
+	/**æ ¹æ®æ­£ç¡®ç±»ç›®æ–‡ä»¶å’Œåˆ†ç±»ç»“æœæ–‡è®¡ç®—æ··æ·†çŸ©é˜µå¹¶ä¸”è¾“å‡º
+	 * @param rightCate æ­£ç¡®ç±»ç›®å¯¹åº”map
+	 * @param resultCate åˆ†ç±»ç»“æœå¯¹åº”map
+	 * @return double åˆ†ç±»çš„å‡†ç¡®ç‡
 	 * @throws IOException 
 	 */
 	private void computerConfusionMatrix(Map<String, String> rightCate,
 			Map<String, String> resultCate) {
 		// TODO Auto-generated method stub	
 		int[][] confusionMatrix = new int[20][20];
-		//Ê×ÏÈÇó³öÀàÄ¿¶ÔÓ¦µÄÊı×éË÷Òı
+		//é¦–å…ˆæ±‚å‡ºç±»ç›®å¯¹åº”çš„æ•°ç»„ç´¢å¼•
 		SortedSet<String> cateNames = new TreeSet<String>();
 		Set<Map.Entry<String, String>> rightCateSet = rightCate.entrySet();
 		for(Iterator<Map.Entry<String, String>> it = rightCateSet.iterator(); it.hasNext();){
 			Map.Entry<String, String> me = it.next();
 			cateNames.add(me.getValue());
 		}
-		cateNames.add("rec.sport.baseball");//·ÀÖ¹ÊıÉÙÒ»¸öÀàÄ¿
+		cateNames.add("rec.sport.baseball");//é˜²æ­¢æ•°å°‘ä¸€ä¸ªç±»ç›®
 		String[] cateNamesArray = cateNames.toArray(new String[0]);
 		Map<String,Integer> cateNamesToIndex = new TreeMap<String,Integer>();
 		for(int i = 0; i < cateNamesArray.length; i++){
@@ -211,7 +211,7 @@ public class NaiveBayesianClassifier {
 			Map.Entry<String, String> me = it.next();
 			confusionMatrix[cateNamesToIndex.get(me.getValue())][cateNamesToIndex.get(resultCate.get(me.getKey()))]++;
 		}
-		//Êä³ö»ìÏı¾ØÕó
+		//è¾“å‡ºæ··æ·†çŸ©é˜µ
 		double[] hangSum = new double[20];
 		System.out.print("    ");
 		for(int i = 0; i < 20; i++){
@@ -229,9 +229,9 @@ public class NaiveBayesianClassifier {
 		System.out.println();
 	}
 
-	/**´Ó·ÖÀà½á¹ûÎÄ¼şÖĞ¶ÁÈ¡map
-	 * @param classifyResultFileNew ÀàÄ¿ÎÄ¼ş
-	 * @return Map<String, String> ÓÉ<ÎÄ¼şÃû£¬ÀàÄ¿Ãû>±£´æµÄmap
+	/**ä»åˆ†ç±»ç»“æœæ–‡ä»¶ä¸­è¯»å–map
+	 * @param classifyResultFileNew ç±»ç›®æ–‡ä»¶
+	 * @return Map<String, String> ç”±<æ–‡ä»¶åï¼Œç±»ç›®å>ä¿å­˜çš„map
 	 * @throws IOException 
 	 */
 	private Map<String, String> getMapFromResultFile(
@@ -250,33 +250,32 @@ public class NaiveBayesianClassifier {
 		return res;
 	}
 
-	/**
+	/**é¦–å…ˆåˆ›å»ºè®­ç»ƒé›†å’Œæµ‹è¯•é›†
+
 	 * @param args
 	 * @throws Exception 
 	 */
-	public void NaiveBayesianClassifierMain(String[] args) throws Exception {
+	public void NaiveBayesianClassifierMain() throws Exception {
 		 //TODO Auto-generated method stub
-		//Ê×ÏÈ´´½¨ÑµÁ·¼¯ºÍ²âÊÔ¼¯
 		CreateTrainAndTestSample ctt = new CreateTrainAndTestSample();
 		NaiveBayesianClassifier nbClassifier = new NaiveBayesianClassifier();
-		ctt.filterSpecialWords();//¸ù¾İ°üº¬·ÇÌØÕ÷´ÊµÄÎÄµµ¼¯Éú³ÉÖ»°üº¬ÌØÕ÷´ÊµÄÎÄµµ¼¯µ½processedSampleOnlySpecialÄ¿Â¼ÏÂ
+//		ctt.filterSpecialWords();//æ ¹æ®åŒ…å«éç‰¹å¾è¯çš„æ–‡æ¡£é›†ç”ŸæˆåªåŒ…å«ç‰¹å¾è¯çš„æ–‡æ¡£é›†åˆ°processedSampleOnlySpecialç›®å½•ä¸‹
 		double[] accuracyOfEveryExp = new double[10];
 		double accuracyAvg,sum = 0;
-		for(int i = 0; i < 10; i++){//ÓÃ½»²æÑéÖ¤·¨×öÊ®´Î·ÖÀàÊµÑé£¬¶Ô×¼È·ÂÊÈ¡Æ½¾ùÖµ	
-			String TrainDir = "F:/DataMiningSample/TrainSample"+i;
-			String TestDir = "F:/DataMiningSample/TestSample"+i;
-			String classifyRightCate = "F:/DataMiningSample/classifyRightCate"+i+".txt";
-			String classifyResultFileNew = "F:/DataMiningSample/classifyResultNew"+i+".txt";
-			ctt.createTestSamples("F:/DataMiningSample/processedSampleOnlySpecial", 0.9, i,classifyRightCate);
+		for(int i = 0; i < 10; i++){//ç”¨äº¤å‰éªŒè¯æ³•åšåæ¬¡åˆ†ç±»å®éªŒï¼Œå¯¹å‡†ç¡®ç‡å–å¹³å‡å€¼
+			String TrainDir = "DataMiningSample/TrainSample"+i;
+			String TestDir = "DataMiningSample/TestSample"+i;
+			String classifyRightCate = "DataMiningSample/classifyRightCate"+i+".txt";
+			String classifyResultFileNew = "DataMiningSample/classifyResultNew"+i+".txt";
+//			ctt.createTestSamples("DataMiningSample/SampleWithSpecial", 0.9, i, classifyRightCate);
 			nbClassifier.doProcess(TrainDir,TestDir,classifyResultFileNew);
 			accuracyOfEveryExp[i] = nbClassifier.computeAccuracy (classifyRightCate, classifyResultFileNew);
-			System.out.println("The accuracy for Naive Bayesian Classifier in "+i+"th Exp is :" + accuracyOfEveryExp[i]);
+			System.out.println("ç¬¬"+i+"æ¬¡ æœ´ç´ è´å¶æ–¯åˆ†ç±»å™¨çš„å‡†ç¡®ç‡ :" + accuracyOfEveryExp[i]);
 		}
 		for(int i = 0; i < 10; i++){
 			sum += accuracyOfEveryExp[i];
 		}
 		accuracyAvg = sum / 10;
-		System.out.println("The average accuracy for Naive Bayesian Classifier in all Exps is :" + accuracyAvg);
-		
+		System.out.println("æ€»ä½“æ ·æœ¬æœ´ç´ è´å¶æ–¯åˆ†ç±»å™¨çš„å¹³å‡æ­£ç¡®ç‡ :" + accuracyAvg);
 	}
 }

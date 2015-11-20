@@ -9,44 +9,45 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Iterator;
 
-/**¼ÆËãÎÄµµµÄÊôĞÔÏòÁ¿£¬½«ËùÓĞÎÄµµÏòÁ¿»¯
+/**è®¡ç®—æ–‡æ¡£çš„å±æ€§å‘é‡ï¼Œå°†æ‰€æœ‰æ–‡æ¡£å‘é‡åŒ–
  */
 public class ComputeWordsVector {
 	
-	/**¼ÆËãÎÄµµµÄTFÊôĞÔÏòÁ¿,Ö±½ÓĞ´³É¶şÎ¬Êı×é±éÀúĞÎÊ½¼´¿É£¬Ã»±ØÒªµİ¹é
-	 * @param strDir ´¦ÀíºÃµÄnewsgroupÎÄ¼şÄ¿Â¼µÄ¾ø¶ÔÂ·¾¶
-	 * @param trainSamplePercent ÑµÁ·ÑùÀı¼¯Õ¼Ã¿¸öÀàÄ¿µÄ±ÈÀı
-	 * @param indexOfSample ²âÊÔÑùÀı¼¯µÄÆğÊ¼µÄ²âÊÔÑùÀı±àºÅ
-	 * @param wordMap ÊôĞÔ´Êµämap
+	/**è®¡ç®—æ–‡æ¡£çš„TFå±æ€§å‘é‡,ç›´æ¥å†™æˆäºŒç»´æ•°ç»„éå†å½¢å¼å³å¯ï¼Œæ²¡å¿…è¦é€’å½’
+	 * @param strDir å¤„ç†å¥½çš„newsgroupæ–‡ä»¶ç›®å½•çš„ç»å¯¹è·¯å¾„
+	 * @param trainSamplePercent è®­ç»ƒæ ·ä¾‹é›†å æ¯ä¸ªç±»ç›®çš„æ¯”ä¾‹
+	 * @param indexOfSample æµ‹è¯•æ ·ä¾‹é›†çš„èµ·å§‹çš„æµ‹è¯•æ ·ä¾‹ç¼–å·
+	 * @param wordMap å±æ€§è¯å…¸map
 	 * @throws IOException 
 	 */
 	public void computeTFMultiIDF(String strDir, double trainSamplePercent, int indexOfSample, Map<String, Double> iDFPerWordMap, Map<String, Double> wordMap) throws IOException{
 		File fileDir = new File(strDir);
 		String word;
-		SortedMap<String,Double> TFPerDocMap = new TreeMap<String,Double>();
-		//×¢Òâ¿ÉÒÔÓÃÁ½¸öĞ´ÎÄ¼ş£¬Ò»¸ö×¨ÃÅĞ´²âÊÔÑùÀı£¬Ò»¸ö×¨ÃÅĞ´ÑµÁ·ÑùÀı£¬ÓÃsampleTypeµÄÖµÀ´±íÊ¾
-		String trainFileDir = "F:/DataMiningSample/docVector/wordTFIDFMapTrainSample"+indexOfSample;
-		String testFileDir = "F:/DataMiningSample/docVector/wordTFIDFMapTestSample"+indexOfSample;
+		System.out.println(strDir);
+		SortedMap<String,Double> TFPerDocMap = new TreeMap<>();
+		//æ³¨æ„å¯ä»¥ç”¨ä¸¤ä¸ªå†™æ–‡ä»¶ï¼Œä¸€ä¸ªä¸“é—¨å†™æµ‹è¯•æ ·ä¾‹ï¼Œä¸€ä¸ªä¸“é—¨å†™è®­ç»ƒæ ·ä¾‹ï¼Œç”¨sampleTypeçš„å€¼æ¥è¡¨ç¤º
+		String trainFileDir = "DataMiningSample/docVector/wordTFIDFMapTrainSample"+indexOfSample;
+		String testFileDir = "DataMiningSample/docVector/wordTFIDFMapTestSample"+indexOfSample;
 		FileWriter tsTrainWriter = new FileWriter(new File(trainFileDir));
-		FileWriter tsTestWrtier = new FileWriter(new File(testFileDir));
+		FileWriter tsTestWriter = new FileWriter(new File(testFileDir));
 		FileWriter tsWriter = tsTrainWriter;
 		File[] sampleDir = fileDir.listFiles();
 		for(int i = 0; i < sampleDir.length; i++){
 			String cateShortName = sampleDir[i].getName();
 			System.out.println("compute: " + cateShortName);
 			File[] sample = sampleDir[i].listFiles();
-			double testBeginIndex = indexOfSample*(sample.length * (1-trainSamplePercent));//²âÊÔÑùÀıµÄÆğÊ¼ÎÄ¼şĞòºÅ
-			double testEndIndex = (indexOfSample+1)*(sample.length * (1-trainSamplePercent));//²âÊÔÑùÀı¼¯µÄ½áÊøÎÄ¼şĞòºÅ
-			System.out.println("dirName_total length:"+sampleDir[i].getCanonicalPath()+"_"+sample.length);
+			double testBeginIndex = indexOfSample*(sample.length * (1-trainSamplePercent));//æµ‹è¯•æ ·ä¾‹çš„èµ·å§‹æ–‡ä»¶åºå·
+			double testEndIndex = (indexOfSample+1)*(sample.length * (1-trainSamplePercent));//æµ‹è¯•æ ·ä¾‹é›†çš„ç»“æŸæ–‡ä»¶åºå·
+			System.out.println("dirName_total length:"+sampleDir[i].getPath()+"_"+sample.length);
 			System.out.println(trainSamplePercent + " length:"+sample.length * trainSamplePercent +" testBeginIndex:"+testBeginIndex+" testEndIndex"+ testEndIndex);	
 			for(int j = 0;j < sample.length; j++){
 				TFPerDocMap.clear();
 				FileReader samReader = new FileReader(sample[j]);
 				BufferedReader samBR = new BufferedReader(samReader);
 				String fileShortName = sample[j].getName();
-				Double wordSumPerDoc = 0.0;//¼ÆËãÃ¿ÆªÎÄµµµÄ×Ü´ÊÊı
+				Double wordSumPerDoc = 0.0;//è®¡ç®—æ¯ç¯‡æ–‡æ¡£çš„æ€»è¯æ•°
 				while((word = samBR.readLine()) != null){
-					if(!word.isEmpty() && wordMap.containsKey(word)){//±ØĞëÊÇÊôĞÔ´ÊµäÀïÃæµÄ´Ê£¬È¥µôµÄ´Ê²»¿¼ÂÇ
+					if(!word.isEmpty() && wordMap.containsKey(word)){//å¿…é¡»æ˜¯å±æ€§è¯å…¸é‡Œé¢çš„è¯ï¼Œå»æ‰çš„è¯ä¸è€ƒè™‘
 						wordSumPerDoc++;
 						if(TFPerDocMap.containsKey(word)){
 							Double count =  TFPerDocMap.get(word);
@@ -57,10 +58,10 @@ public class ComputeWordsVector {
 						}
 					}
 				}
-				//±éÀúÒ»ÏÂµ±Ç°ÎÄµµµÄTFmap£¬³ıÒÔÎÄµµµÄ×Ü´ÊÊı»»³É´ÊÆµ,È»ºó½«´ÊÆµ³ËÒÔ´ÊµÄIDF£¬µÃµ½×îÖÕµÄÌØÕ÷È¨Öµ£¬²¢ÇÒÊä³öµ½ÎÄ¼ş
-				//×¢Òâ²âÊÔÑùÀıºÍÑµÁ·ÑùÀıĞ´ÈëµÄÎÄ¼ş²»Í¬
+				//éå†ä¸€ä¸‹å½“å‰æ–‡æ¡£çš„TFmapï¼Œé™¤ä»¥æ–‡æ¡£çš„æ€»è¯æ•°æ¢æˆè¯é¢‘,ç„¶åå°†è¯é¢‘ä¹˜ä»¥è¯çš„IDFï¼Œå¾—åˆ°æœ€ç»ˆçš„ç‰¹å¾æƒå€¼ï¼Œå¹¶ä¸”è¾“å‡ºåˆ°æ–‡ä»¶
+				//æ³¨æ„æµ‹è¯•æ ·ä¾‹å’Œè®­ç»ƒæ ·ä¾‹å†™å…¥çš„æ–‡ä»¶ä¸åŒ
 				if(j >= testBeginIndex && j <= testEndIndex){
-					tsWriter = tsTestWrtier;
+					tsWriter = tsTestWriter;
 				}
 				else{
 					tsWriter = tsTrainWriter;
@@ -70,12 +71,12 @@ public class ComputeWordsVector {
 				for(Iterator<Map.Entry<String, Double>> mt = tempTF.iterator(); mt.hasNext();){
 					Map.Entry<String, Double> me = mt.next();
 					//wordWeight =  (me.getValue() / wordSumPerDoc) * IDFPerWordMap.get(me.getKey());
-					//ÓÉÓÚ¼ÆËãIDF·Ç³£ºÄÊ±£¬3Íò¶à¸ö´ÊµÄÊôĞÔ´Êµä³õ²½¹À¼ÆĞèÒª25¸öĞ¡Ê±£¬ÏÈ³¢ÊÔÈÏÎªËùÓĞ´ÊµÄIDF¶¼ÊÇ1µÄÇé¿ö
+					//ç”±äºè®¡ç®—IDFéå¸¸è€—æ—¶ï¼Œ3ä¸‡å¤šä¸ªè¯çš„å±æ€§è¯å…¸åˆæ­¥ä¼°è®¡éœ€è¦25ä¸ªå°æ—¶ï¼Œå…ˆå°è¯•è®¤ä¸ºæ‰€æœ‰è¯çš„IDFéƒ½æ˜¯1çš„æƒ…å†µ
 					wordWeight =  (me.getValue() / wordSumPerDoc) * 1.0;
 					TFPerDocMap.put(me.getKey(), wordWeight);
 				}
 				tsWriter.append(cateShortName + " ");
-				String keyWord = fileShortName.substring(0,5);
+				String keyWord = fileShortName;
 				tsWriter.append(keyWord+ " ");
 				Set<Map.Entry<String, Double>> tempTF2 = TFPerDocMap.entrySet();
 				for(Iterator<Map.Entry<String, Double>> mt = tempTF2.iterator(); mt.hasNext();){
@@ -87,38 +88,34 @@ public class ComputeWordsVector {
 			}
 		}
 		tsTrainWriter.close();
-		tsTestWrtier.close();
+		tsTestWriter.close();
 		tsWriter.close();
 	}
 	
-	/**Í³¼ÆÃ¿¸ö´ÊµÄ×ÜµÄ³öÏÖ´ÎÊı£¬·µ»Ø³öÏÖ´ÎÊı´óÓÚ3´ÎµÄ´Ê»ã¹¹³É×îÖÕµÄÊôĞÔ´Êµä
-	 * @param strDir ´¦ÀíºÃµÄnewsgroupÎÄ¼şÄ¿Â¼µÄ¾ø¶ÔÂ·¾¶
+	/**ç»Ÿè®¡æ¯ä¸ªè¯çš„æ€»çš„å‡ºç°æ¬¡æ•°ï¼Œè¿”å›å‡ºç°æ¬¡æ•°å¤§äº3æ¬¡çš„è¯æ±‡æ„æˆæœ€ç»ˆçš„å±æ€§è¯å…¸
+	 * @param strDir å¤„ç†å¥½çš„newsgroupæ–‡ä»¶ç›®å½•çš„ç»å¯¹è·¯å¾„
 	 * @throws IOException 
 	 */
 	public SortedMap<String,Double> countWords(String strDir,Map<String, Double> wordMap) throws IOException{
 		File sampleFile = new File(strDir);
-		File [] sample = sampleFile.listFiles();
+		File [] sampleDirs = sampleFile.listFiles();
 		String word;
-		for(int i = 0; i < sample.length; i++){
-			if(!sample[i].isDirectory()){
-				if(sample[i].getName().contains("stemed")){
-					FileReader samReader = new FileReader(sample[i]);
-					BufferedReader samBR = new BufferedReader(samReader);
-					while((word = samBR.readLine()) != null){
-						if(!word.isEmpty() && wordMap.containsKey(word)){
-							double count = wordMap.get(word) + 1;
-							wordMap.put(word, count);
-						}
-						else {
-							wordMap.put(word, 1.0);
-						}
+		for(File sampleDir:sampleDirs){
+			File[] files = sampleDir.listFiles();
+			for(File file: files){
+				FileReader samReader = new FileReader(file);
+				BufferedReader samBR = new BufferedReader(samReader);
+				while((word = samBR.readLine())!=null){
+					if(!word.isEmpty()&&wordMap.containsKey(word)){
+						double count = wordMap.get(word) + 1;
+						wordMap.put(word,count);
+					}else{
+						wordMap.put(word,1.0);
 					}
-				}	
+				}
 			}
-			else countWords(sample[i].getCanonicalPath(),wordMap);
 		}
-		//Ö»·µ»Ø³öÏÖ´ÎÊı´óÓÚ3µÄµ¥´Ê
-		SortedMap<String,Double> newWordMap = new TreeMap<String,Double>();
+		SortedMap<String,Double> newWordMap = new TreeMap<>();
 		Set<Map.Entry<String,Double>> allWords = wordMap.entrySet();
 		for(Iterator<Map.Entry<String,Double>> it = allWords.iterator(); it.hasNext();){
 			Map.Entry<String, Double> me = it.next();
@@ -129,15 +126,19 @@ public class ComputeWordsVector {
 		return newWordMap;	
 	}
 	
-	/**´òÓ¡ÊôĞÔ´Êµä
-	 * @param SortedMap<String,Double> ÊôĞÔ´Êµä
+	/**æ‰“å°å±æ€§è¯å…¸
+	 * @param SortedMap<String,Double> å±æ€§è¯å…¸
 	 * @throws IOException 
 	 */
 	void printWordMap(Map<String, Double> wordMap) throws IOException {
 		// TODO Auto-generated method stub
 		System.out.println("printWordMap");
 		int countLine = 0;
-		File outPutFile = new File("F:/DataMiningSample/docVector/allDicWordCountMap.txt");
+		File filepath = new File("DataMiningSample/docVector");
+		if(!filepath.exists()){
+			filepath.mkdir();
+		}
+		File outPutFile = new File("DataMiningSample/docVector/allDicWordCountMap.txt");
 		FileWriter outPutFileWriter = new FileWriter(outPutFile);
 		Set<Map.Entry<String,Double>> allWords = wordMap.entrySet();
 		for(Iterator<Map.Entry<String,Double>> it = allWords.iterator(); it.hasNext();){
@@ -148,16 +149,16 @@ public class ComputeWordsVector {
 		System.out.println("WordMap size" + countLine);
 	}
 	
-	/**¼ÆËãIDF£¬¼´ÊôĞÔ´ÊµäÖĞÃ¿¸ö´ÊÔÚ¶àÉÙ¸öÎÄµµÖĞ³öÏÖ¹ı
-	 * @param SortedMap<String,Double> ÊôĞÔ´Êµä
-	 * @return µ¥´ÊµÄIDFmap
+	/**è®¡ç®—IDFï¼Œå³å±æ€§è¯å…¸ä¸­æ¯ä¸ªè¯åœ¨å¤šå°‘ä¸ªæ–‡æ¡£ä¸­å‡ºç°è¿‡
+	 * @param SortedMap<String,Double> å±æ€§è¯å…¸
+	 * @return å•è¯çš„IDF map
 	 * @throws IOException 
 	 */
 	SortedMap<String,Double> computeIDF(String string, Map<String, Double> wordMap) throws IOException {
 		// TODO Auto-generated method stub
 		File fileDir = new File(string);
 		String word;
-		SortedMap<String,Double> IDFPerWordMap = new TreeMap<String,Double>();	
+		SortedMap<String,Double> IDFPerWordMap = new TreeMap<>();
 		Set<Map.Entry<String, Double>> wordMapSet = wordMap.entrySet();
 		for(Iterator<Map.Entry<String, Double>> pt = wordMapSet.iterator(); pt.hasNext();){
 			Map.Entry<String, Double> pe = pt.next();
@@ -176,11 +177,10 @@ public class ComputeWordsVector {
 							break;
 						}
 					}
-					if(isExited) coutDoc++;	
-					}	
+					if(isExited) coutDoc++;
+					}
 				}
-			//¼ÆËãµ¥´ÊµÄIDF
-			Double IDF = Math.log(20000 / coutDoc) / Math.log(10);
+			Double IDF = Math.log(2000 / coutDoc) / Math.log(10);
 			IDFPerWordMap.put(dicWord, IDF);
 			}
 		return IDFPerWordMap;

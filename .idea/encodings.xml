@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/ComputeWordsVector.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/DataPreprocess.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/KNNClassifier.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/NaiveBayesianClassifier.java" charset="UTF-8" />
   </component>
 </project>
